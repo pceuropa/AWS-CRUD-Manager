@@ -40,8 +40,9 @@ examples:
     python3 awsconsole.py ec2 all --ebs
     python3 awsconsole.py ec2 all --autoscaling
     python3 awsconsole.py ec2 find -i i-0552e09b7a54fa2cf
+    python3 awsconsole.py ec2 find -i i-0552e09b7a54fa2cf --[terminate|start|stop]
 
-    python3 awsconsole.py [rds|elb|lambda] all
+    python3 awsconsole.py [rds|elb|lambda] all --delete
 ```
  
 [AWS Watchdog lambda](https://ap-southeast-2.console.aws.amazon.com/lambda/home?region=ap-southeast-2#/functions/aws-watchdog?tab=graph) live in [Australia Sydney (ap-southeast-2)](https://ap-southeast-1.console.aws.amazon.com/lambda/home?region=ap-southeast-2#/functions)
