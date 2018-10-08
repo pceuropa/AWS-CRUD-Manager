@@ -1,9 +1,11 @@
 """
+Summary
+
+Description: Class contains method neccesairy to manage EC2 instances
 File: ec2.py
 Author: Rafal Marguzewicz (PGS Software)
 Email: rmarguzewicz@pgs-soft.com
 Github:
-Description: Class contains method neccesairy to manage EC2 instances
 """
 
 import boto3

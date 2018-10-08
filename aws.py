@@ -18,11 +18,11 @@ Description: Coore super class for class services AWS
     ami_owners = ['amazon']
 """
 
-from typing import TypeVar
+from typing import TypeVar, Union
 import logging
 from os import environ
 
-StrNone = TypeVar('SN', str, None)
+StrNone = Union[str, None]
 AnyStr = TypeVar('AnyStr', bytes, str)
 
 log = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ class Aws(object):
         "dont_stop": {'Name': 'tag:stop', 'Values': ['false']},
         "without_owner": {'Name': 'tag:Owner', 'Values': ['*']}
     }
-    filters = []
+    filters: list = []
     # defaul region where you work
     region_name = 'ap-southeast-1'
     regions = [
@@ -103,8 +103,8 @@ class Aws(object):
                 return dict_with_owner_key[0]['Value']
         return None
 
-    def have_tag_owner(self, tags: dict) -> StrNone:
+    def have_tag_owner(self, tags: dict):
         return self.have_tag(tags, 'owner')
 
-    def have_tag_stop(self, tags: dict) -> StrNone:
+    def have_tag_stop(self, tags: dict):
         return self.have_tag(tags, 'stop')

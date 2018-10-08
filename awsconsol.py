@@ -12,16 +12,18 @@ from ec2.ec2 import Ec2
 from s3.s3 import S3
 from elb.elb import Elb
 from rds.rds import Rds
+from dynamodb.dynamodb import Dynamodb
 from migrate import Migrate
 from awslambda.awslambda import Lambda
 
+SERVICES: list = ['ec2', 'iam', 's3', 'elb', 'lambda', 'rds', 'migrate', 'dynamodb']
 
 if __name__ == "__main__":
     Arg = ArgumentParser(
-            prog='awsconsole.py',
-            formatter_class=RawDescriptionHelpFormatter,
-            description='''CLI Manager fetures:''',
-            epilog='''
+        prog='awsconsole.py',
+        formatter_class=RawDescriptionHelpFormatter,
+        description='''CLI Manager fetures:''',
+        epilog='''
 examples:
     python3 awsconsole.py ec2 all
     python3 awsconsole.py ec2 all --ebs
@@ -30,7 +32,7 @@ examples:
 
     python3 awsconsole.py [rds|elb|lambda] all
     ''')
-    Arg.add_argument('service', choices=['ec2', 'iam', 's3', 'elb', 'lambda', 'rds', 'migrate'], help="ec2|aim")
+    Arg.add_argument('service', choices=SERVICES, help="ec2|aim")
     Arg.add_argument('action', help="all|find|...")
     Arg.add_argument('-i', '--id', help="")
     Arg.add_argument('-R', '--running', action='store_true', help="")
