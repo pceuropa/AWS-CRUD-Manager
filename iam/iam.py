@@ -19,7 +19,7 @@ class Iam(Aws):
     def __init__(self, params: dict):
         super().__init__(params)
 
-    def create_user(self):
+    def create(self):
         """Create AIM role
         :returns: TODO
         """
@@ -42,14 +42,26 @@ class Iam(Aws):
             print(red("Please enter correct username -u --username"))
 
     def all(self):
+        if self.params.groups:
+            self.groups()
+        else:
+            self.users()
         print("groups or users command")
+
+    def find(self):
+        """Default find user (optionaly role)
+        :returns: TODO
+
+        """
+        pass
 
     def groups(self):
         """List IAM groups
         :returns: list
         """
+        iam = boto3.client('iam')
         try:
-            for i in self.iam.list_groups()['Groups']:
+            for i in iam.list_groups()['Groups']:
                 print(f"{i['GroupName']:20} {i['Arn']}")
 
         except Exception as e:
@@ -59,6 +71,16 @@ class Iam(Aws):
         if self.params.id:
             login_profile = self.iam.LoginProfile(self.params.id)
             return login_profile.delete()
+
+    def create_profile(self):
+        if self.params.id:
+            login_profile = self.iam.LoginProfile(self.params.id)
+            return login_profile.create(
+                Password=self.params.password,
+                PasswordResetRequired=False
+            )
+        else:
+            print("awsconsol.py iam create_profile -i [user_name]")
 
     def users(self):
         """List users

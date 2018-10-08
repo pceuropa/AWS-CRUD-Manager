@@ -18,10 +18,10 @@ from awslambda.awslambda import Lambda
 
 if __name__ == "__main__":
     Arg = ArgumentParser(
-            prog='awsconsole.py',
-            formatter_class=RawDescriptionHelpFormatter,
-            description='''CLI Manager fetures:''',
-            epilog='''
+        prog='awsconsole.py',
+        formatter_class=RawDescriptionHelpFormatter,
+        description='''CLI Manager fetures:''',
+        epilog='''
 examples:
     python3 awsconsole.py ec2 all
     python3 awsconsole.py ec2 all --ebs
@@ -38,8 +38,10 @@ examples:
     Arg.add_argument('-u', '--username', help="Username for AIM role")
     Arg.add_argument('-r', '--region_name', help="Username for AIM role")
     Arg.add_argument('-o', '--without_owner', action="store_true", help="Ec2 with owner")
+    Arg.add_argument('--autoscaling', action="store_true", help="Search Autoscaling groups (only EC2)")
+    Arg.add_argument('--groups', action="store_true", help="Search IAM groups (only IAM")
     Arg.add_argument('--ebs', action="store_true", help="Search EBS Volumes (only service ec2)")
-    Arg.add_argument('--autoscaling', action="store_true", help="Search Autoscaling groups (only service ec2)")
+    Arg.add_argument('-p', '--password', help="to IAM")
     Arg.add_argument('--stop', action="store_true", help="Stop one or all instances")
     Arg.add_argument('--start', action="store_true", help="Start one or all instances from query")
     Arg.add_argument('--terminate', action="store_true", help="Terminate one or all EC2 instances")
