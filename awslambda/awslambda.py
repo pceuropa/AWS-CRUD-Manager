@@ -1,19 +1,18 @@
-import boto3
-from aws import Aws
+from boto3 import client
+from aws import Aws, StrNone
 from helpers.color import yel
 from .summary import summary
 
 """
 File: lambda.py
 Author: Rafal Marguzewicz
-Email: rmarguzewicz@pg-soft.com
+Email: info@pceuropa.net
 Github:
 Description: Lambda
 """
 
 
 class Lambda(Aws):
-    ec2 = boto3.client('lambda')
     response_meta_data = None
     functions = None
     """create_user - create user and add to group"""
@@ -21,30 +20,63 @@ class Lambda(Aws):
     def __init__(self, params={}):
         """TODO: to be defined1. """
         super().__init__(params)
-        self.functions = self.ec2.list_functions()['Functions']
+        self.cl = client('lambda', region_name=self.params.region_name)
+
+    def have_tag_owner(self, tags: dict={}) -> StrNone:
+
+        if 'owner' in tags:
+            return tags['owner']
+
+        if 'Owner' in tags:
+            return tags['Owner']
+
+        return None
 
     def all(self):
         """Create AIM role
         :returns: TODO
         """
-        for i in self.regions:
-            ec2 = boto3.client('lambda', region_name=i)
-            functions = ec2.list_functions()['Functions']
+        for region in self.regions:
+            cl = client('lambda', region_name=region)
+            functions = cl.list_functions()['Functions']
+
             if functions:
-                print(i)
+                print('\n', region)
                 for i in functions:
-                    print(f"{yel(i['FunctionName']):50} {i['LastModified']:.10} | {i['Description']}")
+                    response = cl.get_function(FunctionName=i['FunctionName'])
+
+                    if self.params.delete:
+                        try:
+                            if not self.have_tag_owner(response['Tags']):
+                                self.delete(i['FunctionName'])
+                        except KeyError as e:
+                            self.delete(i['FunctionName'])
+
+                    try:
+                        print(f"{yel(i['FunctionName']):50} {i['LastModified']:.10} {self.have_tag_owner(response['Tags'])} | {i['Description']}")
+                    except Exception as e:
+                        print(f"{yel(i['FunctionName']):50} {i['LastModified']:.10} {i['Description']}")
 
     def find(self):
         """Find one lambda function by name of function
         :returns: One lambda function
         """
-        ec2 = boto3.client('lambda', region_name=self.params.region_name)
-        response = ec2.get_function(FunctionName=self.params.id)
+        response = self.cl.get_function(FunctionName=self.params.id)
+        if self.params.delete:
+            self.delete(self.params.id)
         return summary(response, region_name=self.params.region_name)
+
+    def delete(self, function_name: str):
+        """Delete AWS lambda
+        :function_name: lambda name function
+        :returns: TODO
+        """
+        return self.cl.delete_function(
+            FunctionName=function_name,
+        )
 
     def tags(self):
         """Create AIM role
         :returns: TODO
         """
-        return self.ec2.list_tags(Resource='owner')
+        return self.cl.list_tags(Resource='owner')

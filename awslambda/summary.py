@@ -17,13 +17,31 @@ def summary(response, region_name='eu-west-1'):
             cyan(c['Role'])
         ))
 
-        print("\tHandler: {0}\t \tCodeSize: {1}\tTimeout: {2}\t MemorySize: {3}\t FunctionArn: {4}".format(
+        print("\tLastModified: {0}".format(
+            yel(c['LastModified'])
+        ))
+
+        print("\tHandler: {0}\t \tCodeSize: {1}\tTimeout: {2}\t MemorySize: {3}\n\tFunctionArn: {4}".format(
             cyan(c['Handler']),
             gre(c['CodeSize']),
             red(c['Timeout']),
             red(c['MemorySize']),
             cyan(c['FunctionArn'])
         ))
+    except Exception as e:
+        print(e)
+
+    try:
+        print("\tTags:")
+        tags = response['Tags']
+        for i in tags:
+            print("\t\t{0}: {1}".format(
+                cyan(i),
+                gre(tags[i]),
+            ))
+
+    except KeyError as e:
+        print(e)
 
         print("\tLastModified: {0}\t \tVersion: {1}\t CodeSha256: {2}".format(
             cyan(c['LastModified']),
@@ -44,9 +62,6 @@ def summary(response, region_name='eu-west-1'):
             cyan(r['HTTPHeaders']['connection']),
             cyan(r['HTTPHeaders']['x-amzn-requestid']),
         ))
-
-    except Exception as e:
-        print(e)
 
     try:
         print("\tVPC:\n \t\tSubnetIds: {0}\tSecurityGroudIds: {1}\tVpcId: {2}".format(
